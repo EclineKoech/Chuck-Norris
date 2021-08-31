@@ -1,25 +1,34 @@
-import logo from './logo.svg';
+
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import List from './component/List';
+import WithlistLoading from './component/withListLoading';
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const ListLoading = WithlistLoading(List);
+  const [AppState, setAppState] = useState({
+    loading: false,
+    categories:null,
+  });
+
+  useEffect(()=>{
+    setAppState({ loading: true});
+    const apiUrl = 'https://api.chucknorris.io/jokes/categories';
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((categories) => {
+        setAppState({ loading:false, categories:categories});
+      });
+  }, [setAppState]);
+  return(
+    <div className='App'>
+      <div className='container'>
+        <ListLoading isLoading ={AppState.loading} categories={AppState.categories}/>
+      </div>
     </div>
-  );
+  )
 }
+
 
 export default App;
